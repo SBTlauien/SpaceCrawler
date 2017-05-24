@@ -2,11 +2,9 @@ package org.jsoup.nodes;
 
 import java.io.IOException;
 
-
 public class DataNode extends Node{
     private static final String DATA_KEY = "data";
 
-    
     public DataNode(String data, String baseUri) {
         super(baseUri);
         attributes.put(DATA_KEY, data);
@@ -16,12 +14,10 @@ public class DataNode extends Node{
         return "#data";
     }
 
-    
     public String getWholeData() {
         return attributes.get(DATA_KEY);
     }
 
-    
     public DataNode setWholeData(String data) {
         attributes.put(DATA_KEY, data);
         return this;
@@ -38,9 +34,9 @@ public class DataNode extends Node{
         return outerHtml();
     }
 
-    
     public static DataNode createFromEncoded(String encodedData, String baseUri) {
         String data = Entities.unescape(encodedData);
         return new DataNode(data, baseUri);
     }
+
 }

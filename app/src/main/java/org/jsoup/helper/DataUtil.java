@@ -4,7 +4,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.XmlDeclaration;
 import org.jsoup.parser.Parser;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -19,36 +18,29 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public final class DataUtil {
     private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*(?:\"|')?([^\\s,;\"']*)");
     static final String defaultCharset = "UTF-8"; 
     private static final int bufferSize = 60000;
-    private static final char[] mimeBoundaryChars =
-            "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private static final char[] mimeBoundaryChars = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
     static final int boundaryLength = 32;
-
     private DataUtil() {}
 
-    
     public static Document load(File in, String charsetName, String baseUri) throws IOException {
         ByteBuffer byteData = readFileToByteBuffer(in);
         return parseByteData(byteData, charsetName, baseUri, Parser.htmlParser());
     }
 
-    
     public static Document load(InputStream in, String charsetName, String baseUri) throws IOException {
         ByteBuffer byteData = readToByteBuffer(in);
         return parseByteData(byteData, charsetName, baseUri, Parser.htmlParser());
     }
 
-    
     public static Document load(InputStream in, String charsetName, String baseUri, Parser parser) throws IOException {
         ByteBuffer byteData = readToByteBuffer(in);
         return parseByteData(byteData, charsetName, baseUri, parser);
     }
 
-    
     static void crossStreams(final InputStream in, final OutputStream out) throws IOException {
         final byte[] buffer = new byte[bufferSize];
         int len;
@@ -57,18 +49,11 @@ public final class DataUtil {
         }
     }
 
-    
-    
-    
     static Document parseByteData(ByteBuffer byteData, String charsetName, String baseUri, Parser parser) {
         String docData;
         Document doc = null;
-
-        
         charsetName = detectCharsetFromBom(byteData, charsetName);
-
-        if (charsetName == null) { 
-            
+        if (charsetName == null) {
             docData = Charset.forName(defaultCharset).decode(byteData).toString();
             doc = parser.parseInput(docData, baseUri);
             Element meta = doc.select("meta[http-equiv=content-type], meta[charset]").first();
@@ -81,7 +66,6 @@ public final class DataUtil {
                     foundCharset = meta.attr("charset");
                 }
             }
-            
             if (foundCharset == null && doc.childNodeSize() > 0 && doc.childNode(0) instanceof XmlDeclaration) {
                 XmlDeclaration prolog = (XmlDeclaration) doc.childNode(0);
                 if (prolog.name().equals("xml")) {
@@ -89,7 +73,6 @@ public final class DataUtil {
                 }
             }
             foundCharset = validateCharset(foundCharset);
-
             if (foundCharset != null && !foundCharset.equals(defaultCharset)) { 
                 foundCharset = foundCharset.trim().replaceAll("[\"']", "");
                 charsetName = foundCharset;
@@ -108,7 +91,6 @@ public final class DataUtil {
         return doc;
     }
 
-    
     public static ByteBuffer readToByteBuffer(InputStream inStream, int maxSize) throws IOException {
         Validate.isTrue(maxSize >= 0, "maxSize must be 0 (unlimited) or larger");
         final boolean capped = maxSize > 0;
@@ -116,7 +98,6 @@ public final class DataUtil {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream(capped ? maxSize : bufferSize);
         int read;
         int remaining = maxSize;
-
         while (!Thread.interrupted()) {
             read = inStream.read(buffer);
             if (read == -1) break;
@@ -129,7 +110,6 @@ public final class DataUtil {
             }
             outStream.write(buffer, 0, read);
         }
-
         return ByteBuffer.wrap(outStream.toByteArray());
     }
 
@@ -154,7 +134,6 @@ public final class DataUtil {
         return ByteBuffer.allocate(0);
     }
 
-    
     static String getCharsetFromContentType(String contentType) {
         if (contentType == null) return null;
         Matcher m = charsetPattern.matcher(contentType);
@@ -179,7 +158,6 @@ public final class DataUtil {
         return null;
     }
 
-    
     static String mimeBoundary() {
         final StringBuilder mime = new StringBuilder(boundaryLength);
         final Random rand = new Random();
@@ -208,4 +186,5 @@ public final class DataUtil {
         }
         return charsetName;
     }
+
 }

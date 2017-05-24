@@ -8,7 +8,6 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,11 +19,9 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.util.HashMap;
 
-
 public class W3CDom {
     protected DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-    
     public Document fromJsoup(org.jsoup.nodes.Document in) {
         Validate.notNull(in);
         DocumentBuilder builder;
@@ -40,7 +37,6 @@ public class W3CDom {
         }
     }
 
-    
     public void convert(org.jsoup.nodes.Document in, Document out) {
         if (!StringUtil.isBlank(in.location()))
             out.setDocumentURI(in.location());
@@ -50,11 +46,9 @@ public class W3CDom {
         traversor.traverse(rootEl);
     }
 
-    
     protected static class W3CBuilder implements NodeVisitor {
         private static final String xmlnsKey = "xmlns";
         private static final String xmlnsPrefix = "xmlns:";
-
         private final Document doc;
         private final HashMap<String, String> namespaces = new HashMap<String, String>(); 
         private Element dest;
@@ -66,10 +60,8 @@ public class W3CDom {
         public void head(org.jsoup.nodes.Node source, int depth) {
             if (source instanceof org.jsoup.nodes.Element) {
                 org.jsoup.nodes.Element sourceEl = (org.jsoup.nodes.Element) source;
-
                 String prefix = updateNamespaces(sourceEl);
                 String namespace = namespaces.get(prefix);
-
                 Element el = doc.createElementNS(namespace, sourceEl.tagName());
                 copyAttributes(sourceEl, el);
                 if (dest == null) { 
@@ -109,11 +101,8 @@ public class W3CDom {
                     el.setAttribute(key, attribute.getValue());
             }
         }
-
         
         private String updateNamespaces(org.jsoup.nodes.Element el) {
-            
-            
             Attributes attributes = el.attributes();
             for (Attribute attr : attributes) {
                 String key = attr.getKey();
@@ -127,14 +116,10 @@ public class W3CDom {
                 }
                 namespaces.put(prefix, attr.getValue());
             }
-
-            
             int pos = el.tagName().indexOf(":");
             return pos > 0 ? el.tagName().substring(0, pos) : "";
         }
-
     }
-
     
     public String asString(Document doc) {
         try {
@@ -149,4 +134,5 @@ public class W3CDom {
             throw new IllegalStateException(e);
         }
     }
+
 }

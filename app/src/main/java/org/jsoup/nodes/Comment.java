@@ -2,11 +2,9 @@ package org.jsoup.nodes;
 
 import java.io.IOException;
 
-
 public class Comment extends Node {
     private static final String COMMENT_KEY = "comment";
 
-    
     public Comment(String data, String baseUri) {
         super(baseUri);
         attributes.put(COMMENT_KEY, data);
@@ -16,18 +14,13 @@ public class Comment extends Node {
         return "#comment";
     }
 
-    
     public String getData() {
         return attributes.get(COMMENT_KEY);
     }
 
 	void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
-        if (out.prettyPrint())
-            indent(accum, depth, out);
-        accum
-                .append("<!--")
-                .append(getData())
-                .append("-->");
+        if (out.prettyPrint()) indent(accum, depth, out);
+        accum.append("<!--").append(getData()).append("-->");
     }
 
 	void outerHtmlTail(Appendable accum, int depth, Document.OutputSettings out) {}
@@ -36,4 +29,5 @@ public class Comment extends Node {
     public String toString() {
         return outerHtml();
     }
+
 }

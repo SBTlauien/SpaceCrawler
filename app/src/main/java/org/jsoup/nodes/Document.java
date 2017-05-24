@@ -5,12 +5,10 @@ import org.jsoup.helper.Validate;
 import org.jsoup.parser.ParseSettings;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
-
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class Document extends Element {
     private OutputSettings outputSettings = new OutputSettings();
@@ -18,47 +16,37 @@ public class Document extends Element {
     private String location;
     private boolean updateMetaCharset = false;
 
-    
     public Document(String baseUri) {
         super(Tag.valueOf("#root", ParseSettings.htmlDefault), baseUri);
         this.location = baseUri;
     }
 
-    
     public static Document createShell(String baseUri) {
         Validate.notNull(baseUri);
-
         Document doc = new Document(baseUri);
         Element html = doc.appendElement("html");
         html.appendElement("head");
         html.appendElement("body");
-
         return doc;
     }
 
-    
     public String location() {
      return location;
     }
-    
-    
+
     public Element head() {
         return findFirstElementByTagName("head", this);
     }
 
-    
     public Element body() {
         return findFirstElementByTagName("body", this);
     }
 
-    
     public String title() {
-        
         Element titleEl = getElementsByTag("title").first();
         return titleEl != null ? StringUtil.normaliseWhitespace(titleEl.text()).trim() : "";
     }
 
-    
     public void title(String title) {
         Validate.notNull(title);
         Element titleEl = getElementsByTag("title").first();
@@ -69,36 +57,24 @@ public class Document extends Element {
         }
     }
 
-    
     public Element createElement(String tagName) {
         return new Element(Tag.valueOf(tagName, ParseSettings.preserveCase), this.baseUri());
     }
 
-    
     public Document normalise() {
         Element htmlEl = findFirstElementByTagName("html", this);
-        if (htmlEl == null)
-            htmlEl = appendElement("html");
-        if (head() == null)
-            htmlEl.prependElement("head");
-        if (body() == null)
-            htmlEl.appendElement("body");
-
-        
-        
+        if (htmlEl == null) htmlEl = appendElement("html");
+        if (head() == null) htmlEl.prependElement("head");
+        if (body() == null) htmlEl.appendElement("body");
         normaliseTextNodes(head());
         normaliseTextNodes(htmlEl);
         normaliseTextNodes(this);
-
         normaliseStructure("head", htmlEl);
         normaliseStructure("body", htmlEl);
-        
         ensureMetaCharsetElement();
-        
         return this;
     }
 
-    
     private void normaliseTextNodes(Element element) {
         List<Node> toMove = new ArrayList<Node>();
         for (Node node: element.childNodes) {
@@ -108,7 +84,6 @@ public class Document extends Element {
                     toMove.add(tn);
             }
         }
-
         for (int i = toMove.size()-1; i >= 0; i--) {
             Node node = toMove.get(i);
             element.removeChild(node);
@@ -117,7 +92,6 @@ public class Document extends Element {
         }
     }
 
-    
     private void normaliseStructure(String tag, Element htmlEl) {
         Elements elements = this.getElementsByTag(tag);
         Element master = elements.first(); 
@@ -125,25 +99,20 @@ public class Document extends Element {
             List<Node> toMove = new ArrayList<Node>();
             for (int i = 1; i < elements.size(); i++) {
                 Node dupe = elements.get(i);
-                for (Node node : dupe.childNodes)
-                    toMove.add(node);
+                for (Node node : dupe.childNodes) toMove.add(node);
                 dupe.remove();
             }
-
-            for (Node dupe : toMove)
-                master.appendChild(dupe);
+            for (Node dupe : toMove) master.appendChild(dupe);
         }
-        
         if (!master.parent().equals(htmlEl)) {
             htmlEl.appendChild(master); 
         }
     }
 
-    
     private Element findFirstElementByTagName(String tag, Node node) {
-        if (node.nodeName().equals(tag))
+        if (node.nodeName().equals(tag)) {
             return (Element) node;
-        else {
+        } else {
             for (Node child: node.childNodes) {
                 Element found = findFirstElementByTagName(tag, child);
                 if (found != null)
@@ -158,7 +127,6 @@ public class Document extends Element {
         return super.html(); 
     }
 
-    
     @Override
     public Element text(String text) {
         body().text(text); 
@@ -169,25 +137,21 @@ public class Document extends Element {
     public String nodeName() {
         return "#document";
     }
-    
-    
+
     public void charset(Charset charset) {
         updateMetaCharsetElement(true);
         outputSettings.charset(charset);
         ensureMetaCharsetElement();
     }
     
-    
     public Charset charset() {
         return outputSettings.charset();
     }
-    
-    
+
     public void updateMetaCharsetElement(boolean update) {
         this.updateMetaCharset = update;
     }
-    
-    
+
     public boolean updateMetaCharsetElement() {
         return updateMetaCharset;
     }
@@ -198,38 +162,28 @@ public class Document extends Element {
         clone.outputSettings = this.outputSettings.clone();
         return clone;
     }
-    
-    
+
     private void ensureMetaCharsetElement() {
         if (updateMetaCharset) {
             OutputSettings.Syntax syntax = outputSettings().syntax();
-
             if (syntax == OutputSettings.Syntax.html) {
                 Element metaCharset = select("meta[charset]").first();
-
                 if (metaCharset != null) {
                     metaCharset.attr("charset", charset().displayName());
                 } else {
                     Element head = head();
-
                     if (head != null) {
                         head.appendElement("meta").attr("charset", charset().displayName());
                     }
                 }
-
-                
                 select("meta[name=charset]").remove();
             } else if (syntax == OutputSettings.Syntax.xml) {
                 Node node = childNodes().get(0);
-
                 if (node instanceof XmlDeclaration) {
                     XmlDeclaration decl = (XmlDeclaration) node;
-
                     if (decl.name().equals("xml")) {
                         decl.attr("encoding", charset().displayName());
-
                         final String version = decl.attr("version");
-
                         if (version != null) {
                             decl.attr("version", "1.0");
                         }
@@ -237,57 +191,44 @@ public class Document extends Element {
                         decl = new XmlDeclaration("xml", baseUri, false);
                         decl.attr("version", "1.0");
                         decl.attr("encoding", charset().displayName());
-
                         prependChild(decl);
                     }
                 } else {
                     XmlDeclaration decl = new XmlDeclaration("xml", baseUri, false);
                     decl.attr("version", "1.0");
                     decl.attr("encoding", charset().displayName());
-
                     prependChild(decl);
                 }
             }
         }
     }
     
-
-    
     public static class OutputSettings implements Cloneable {
-        
         public enum Syntax {html, xml}
-
         private Entities.EscapeMode escapeMode = Entities.EscapeMode.base;
         private Charset charset = Charset.forName("UTF-8");
         private boolean prettyPrint = true;
         private boolean outline = false;
         private int indentAmount = 1;
         private Syntax syntax = Syntax.html;
-
         public OutputSettings() {}
-        
-        
         public Entities.EscapeMode escapeMode() {
             return escapeMode;
         }
 
-        
         public OutputSettings escapeMode(Entities.EscapeMode escapeMode) {
             this.escapeMode = escapeMode;
             return this;
         }
 
-        
         public Charset charset() {
             return charset;
         }
 
-        
         public OutputSettings charset(Charset charset) {
             this.charset = charset;
             return this;
         }
-
         
         public OutputSettings charset(String charset) {
             charset(Charset.forName(charset));
@@ -298,45 +239,37 @@ public class Document extends Element {
             return charset.newEncoder();
         }
 
-        
         public Syntax syntax() {
             return syntax;
         }
 
-        
         public OutputSettings syntax(Syntax syntax) {
             this.syntax = syntax;
             return this;
         }
 
-        
         public boolean prettyPrint() {
             return prettyPrint;
         }
 
-        
         public OutputSettings prettyPrint(boolean pretty) {
             prettyPrint = pretty;
             return this;
         }
-        
-        
+
         public boolean outline() {
             return outline;
         }
-        
-        
+
         public OutputSettings outline(boolean outlineMode) {
             outline = outlineMode;
             return this;
         }
 
-        
         public int indentAmount() {
             return indentAmount;
         }
 
-        
         public OutputSettings indentAmount(int indentAmount) {
             Validate.isTrue(indentAmount >= 0);
             this.indentAmount = indentAmount;
@@ -353,17 +286,14 @@ public class Document extends Element {
             }
             clone.charset(charset.name()); 
             clone.escapeMode = Entities.EscapeMode.valueOf(escapeMode.name());
-            
             return clone;
         }
     }
 
-    
     public OutputSettings outputSettings() {
         return outputSettings;
     }
 
-    
     public Document outputSettings(OutputSettings outputSettings) {
         Validate.notNull(outputSettings);
         this.outputSettings = outputSettings;
@@ -382,4 +312,5 @@ public class Document extends Element {
         this.quirksMode = quirksMode;
         return this;
     }
+
 }

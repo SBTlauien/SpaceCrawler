@@ -2,7 +2,6 @@ package org.jsoup;
 
 import java.io.IOException;
 
-
 public class UnsupportedMimeTypeException extends IOException {
     private String mimeType;
     private String url;
@@ -25,4 +24,5 @@ public class UnsupportedMimeTypeException extends IOException {
     public String toString() {
         return super.toString() + ". Mimetype=" + mimeType + ", URL="+url;
     }
+
 }

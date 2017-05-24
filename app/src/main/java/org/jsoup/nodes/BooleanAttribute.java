@@ -1,6 +1,5 @@
 package org.jsoup.nodes;
 
-
 public class BooleanAttribute extends Attribute {
     
     public BooleanAttribute(String key) {
@@ -11,4 +10,5 @@ public class BooleanAttribute extends Attribute {
     protected boolean isBooleanAttribute() {
         return true;
     }
+
 }

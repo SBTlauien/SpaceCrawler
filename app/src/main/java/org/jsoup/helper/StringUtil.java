@@ -6,25 +6,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
-
 public final class StringUtil {
     
     private static final String[] padding = {"", " ", "  ", "   ", "    ", "     ", "      ", "       ", "        ", "         ", "          "};
-
     
     public static String join(Collection strings, String sep) {
         return join(strings.iterator(), sep);
     }
 
-    
     public static String join(Iterator strings, String sep) {
-        if (!strings.hasNext())
-            return "";
-
+        if (!strings.hasNext())return "";
         String start = strings.next().toString();
-        if (!strings.hasNext()) 
-            return start;
-
+        if (!strings.hasNext()) return start;
         StringBuilder sb = new StringBuilder(64).append(start);
         while (strings.hasNext()) {
             sb.append(sep);
@@ -33,25 +26,16 @@ public final class StringUtil {
         return sb.toString();
     }
 
-    
     public static String padding(int width) {
-        if (width < 0)
-            throw new IllegalArgumentException("width must be > 0");
-
-        if (width < padding.length)
-            return padding[width];
-
+        if (width < 0) throw new IllegalArgumentException("width must be > 0");
+        if (width < padding.length) return padding[width];
         char[] out = new char[width];
-        for (int i = 0; i < width; i++)
-            out[i] = ' ';
+        for (int i = 0; i < width; i++) out[i] = ' ';
         return String.valueOf(out);
     }
 
-    
     public static boolean isBlank(String string) {
-        if (string == null || string.length() == 0)
-            return true;
-
+        if (string == null || string.length() == 0) return true;
         int l = string.length();
         for (int i = 0; i < l; i++) {
             if (!StringUtil.isWhitespace(string.codePointAt(i)))
@@ -60,11 +44,8 @@ public final class StringUtil {
         return true;
     }
 
-    
     public static boolean isNumeric(String string) {
-        if (string == null || string.length() == 0)
-            return false;
-
+        if (string == null || string.length() == 0) return false;
         int l = string.length();
         for (int i = 0; i < l; i++) {
             if (!Character.isDigit(string.codePointAt(i)))
@@ -72,24 +53,20 @@ public final class StringUtil {
         }
         return true;
     }
-
     
     public static boolean isWhitespace(int c){
         return c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r';
     }
 
-    
     public static String normaliseWhitespace(String string) {
         StringBuilder sb = new StringBuilder(string.length());
         appendNormalisedWhitespace(sb, string, false);
         return sb.toString();
     }
 
-    
     public static void appendNormalisedWhitespace(StringBuilder accum, String string, boolean stripLeading) {
         boolean lastWasWhite = false;
         boolean reachedNonWhite = false;
-
         int len = string.length();
         int c;
         for (int i = 0; i < len; i+= Character.charCount(c)) {
@@ -120,26 +97,20 @@ public final class StringUtil {
         return Arrays.binarySearch(haystack, needle) >= 0;
     }
 
-    
     public static URL resolve(URL base, String relUrl) throws MalformedURLException {
-        
-        if (relUrl.startsWith("?"))
-            relUrl = base.getPath() + relUrl;
-        
+        if (relUrl.startsWith("?")) relUrl = base.getPath() + relUrl;
         if (relUrl.indexOf('.') == 0 && base.getFile().indexOf('/') != 0) {
             base = new URL(base.getProtocol(), base.getHost(), base.getPort(), "/" + base.getFile());
         }
         return new URL(base, relUrl);
     }
 
-    
     public static String resolve(final String baseUrl, final String relUrl) {
         URL base;
         try {
             try {
                 base = new URL(baseUrl);
             } catch (MalformedURLException e) {
-                
                 URL abs = new URL(relUrl);
                 return abs.toExternalForm();
             }
@@ -147,6 +118,6 @@ public final class StringUtil {
         } catch (MalformedURLException e) {
             return "";
         }
-
     }
+
 }

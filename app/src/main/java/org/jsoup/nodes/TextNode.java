@@ -1,17 +1,14 @@
 package org.jsoup.nodes;
 
 import java.io.IOException;
-
 import org.jsoup.helper.StringUtil;
 import org.jsoup.helper.Validate;
-
 
 public class TextNode extends Node {
     
     private static final String TEXT_KEY = "text";
     String text;
 
-    
     public TextNode(String text, String baseUri) {
         this.baseUri = baseUri;
         this.text = text;
@@ -20,51 +17,39 @@ public class TextNode extends Node {
 	public String nodeName() {
         return "#text";
     }
-    
-    
+
     public String text() {
         return normaliseWhitespace(getWholeText());
     }
-    
-    
+
     public TextNode text(String text) {
         this.text = text;
-        if (attributes != null)
-            attributes.put(TEXT_KEY, text);
+        if (attributes != null) attributes.put(TEXT_KEY, text);
         return this;
     }
 
-    
     public String getWholeText() {
         return attributes == null ? text : attributes.get(TEXT_KEY);
     }
 
-    
     public boolean isBlank() {
         return StringUtil.isBlank(getWholeText());
     }
-
     
     public TextNode splitText(int offset) {
         Validate.isTrue(offset >= 0, "Split offset must be not be negative");
         Validate.isTrue(offset < text.length(), "Split offset must not be greater than current text length");
-
         String head = getWholeText().substring(0, offset);
         String tail = getWholeText().substring(offset);
         text(head);
         TextNode tailNode = new TextNode(tail, this.baseUri());
-        if (parent() != null)
-            parent().addChildren(siblingIndex()+1, tailNode);
-
+        if (parent() != null) parent().addChildren(siblingIndex()+1, tailNode);
         return tailNode;
     }
 
 	void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
-        if (out.prettyPrint() && ((siblingIndex() == 0 && parentNode instanceof Element && ((Element) parentNode).tag().formatAsBlock() && !isBlank()) || (out.outline() && siblingNodes().size()>0 && !isBlank()) ))
-            indent(accum, depth, out);
-
-        boolean normaliseWhite = out.prettyPrint() && parent() instanceof Element
-                && !Element.preserveWhitespace(parent());
+        if (out.prettyPrint() && ((siblingIndex() == 0 && parentNode instanceof Element && ((Element) parentNode).tag().formatAsBlock() && !isBlank()) || (out.outline() && siblingNodes().size()>0 && !isBlank()) )) indent(accum, depth, out);
+        boolean normaliseWhite = out.prettyPrint() && parent() instanceof Element && !Element.preserveWhitespace(parent());
         Entities.escape(accum, getWholeText(), out, false, normaliseWhite, false);
     }
 
@@ -94,7 +79,6 @@ public class TextNode extends Node {
         return sb.length() != 0 && sb.charAt(sb.length() - 1) == ' ';
     }
 
-    
     private void ensureAttributes() {
         if (attributes == null) {
             attributes = new Attributes();
@@ -137,4 +121,5 @@ public class TextNode extends Node {
         ensureAttributes();
         return super.absUrl(attributeKey);
     }
+
 }
