@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     outputWriter.write("");
                     outputWriter.flush();
                     outputWriter.close();
-                    toast("WATCHLIST CLEARED", false);
+                    toast("RESULTS CLEARED", false);
                 } catch (Exception e) {
                     MainActivity.toast(e.getMessage(), true);
                 }
