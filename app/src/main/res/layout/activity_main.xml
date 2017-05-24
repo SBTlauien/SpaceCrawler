@@ -232,12 +232,12 @@
         android:textColor="#ffff00" />
 
     <Button
-        android:id="@+id/viewWatchlist"
+        android:id="@+id/viewResults"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button"
-        android:text="@string/viewWatchlist"
+        android:text="@string/viewResults"
         android:textColor="#ffff00"
         android:layout_alignTop="@+id/watchListLabel"
         android:layout_alignParentEnd="true"

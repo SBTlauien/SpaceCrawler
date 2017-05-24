@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        Button viewWatchlistButton = (Button) findViewById(R.id.viewWatchlist);
-        viewWatchlistButton.setOnClickListener(new View.OnClickListener(){
+        Button viewResultsButton = (Button) findViewById(R.id.viewResults);
+        viewResultsButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 ArrayList<String> al = new ArrayList<>();
                 try {
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        viewWatchlistButton.setOnLongClickListener(new View.OnLongClickListener() {
+        viewResultsButton.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View arg0) {
                 try {
                     File f = new File(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/Results.txt");
