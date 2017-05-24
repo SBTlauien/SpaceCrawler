@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">SpaceCrawler</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="options">OPTIONS</string>
+    <string name="exit">EXIT</string>
+    <string name="watchList">WATCHLIST</string>
+    <string name="clear">CLEAR</string>
+    <string name="save">SAVE</string>
+    <string name="back">BACK</string>
+    <string name="url">URL: </string>
+    <string name="ua">UA: </string>
+    <string name="blackList">BLACKLIST</string>
+    <string name="whiteList">WHITELIST</string>
+    <string name="crawlExternal">CRAWL EXTERNAL</string>
+    <string name="nis">https://www.bunsenlabs.org</string>
+    <string name="spaceCrawler">SpaceCrawler/1.0(https://niggasin.space/user/95)</string>
+    <string name="pages">PAGES: </string>
+    <string name="finishedLabel">FINISHED: </string>
+    <string name="internalLinks">INTERNAL LINKS: </string>
+    <string name="externalLinks">EXTERNAL LINKS: </string>
+    <string name="watchListLabel">WATCHLIST: </string>
+    <string name="errorLabel">ERRORS: </string>
+    <string name="viewFinished">VIEW FINISHED</string>
+    <string name="viewInternal">VIEW INTERNAL</string>
+    <string name="viewExternal">VIEW EXTERNAL</string>
+    <string name="viewWatchlist">VIEW WATCHLIST</string>
+    <string name="zero">0</string>
+    <string name="use">USE</string>
+    <string name="results">RESULTS</string>
+    <string name="title_activity_view_file">ViewFile</string>
+</resources>

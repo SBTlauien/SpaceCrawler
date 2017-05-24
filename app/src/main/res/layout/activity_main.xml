@@ -1,0 +1,312 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000" >
+
+    <Button
+        android:id="@+id/start"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/button"
+        android:text="@string/start"
+        android:textColor="#ffff00" />
+
+    <Button
+        android:id="@+id/exit"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/button"
+        android:text="@string/exit"
+        android:textColor="#ffff00" />
+
+    <Button
+        android:id="@+id/options"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="@string/options"
+        android:textColor="#ffff00"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/urlLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/start"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/url"
+        android:gravity="center_vertical|start"
+        android:textColor="#EFB842"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/uaLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/urlLabel"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/ua"
+        android:gravity="center_vertical|start"
+        android:textColor="#EFB842"
+        android:textSize="17sp" />
+
+    <EditText
+        android:id="@+id/url"
+        android:inputType="textUri"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/urlLabel"
+        android:layout_alignBottom="@+id/urlLabel"
+        android:layout_toEndOf="@+id/urlLabel"
+        android:layout_marginStart="4dp"
+        android:background="#090909"
+        android:maxLines="2"
+        android:text="@string/nis"
+        android:textColor="#78b2c6"
+        android:textSize="17sp" />
+
+    <EditText
+        android:id="@+id/ua"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/uaLabel"
+        android:layout_alignBottom="@+id/uaLabel"
+        android:layout_below="@+id/urlLabel"
+        android:layout_toEndOf="@+id/uaLabel"
+        android:layout_marginStart="4dp"
+        android:background="#090909"
+        android:maxLines="2"
+        android:text="@string/spaceCrawler"
+        android:textColor="#CEE66B"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/finishedLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/uaLabel"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/finishedLabel"
+        android:textColor="#EFB842"
+        android:textSize="17sp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/internalPagesLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/finishedLabel"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/internalLinks"
+        android:textColor="#EFB842"
+        android:textSize="17sp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/externalPagesLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/internalPagesLabel"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/externalLinks"
+        android:textColor="#EFB842"
+        android:textSize="17sp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/watchListLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/externalPagesLabel"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/watchListLabel"
+        android:textColor="#EFB842"
+        android:textSize="17sp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/finished"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/finishedLabel"
+        android:layout_alignBottom="@+id/finishedLabel"
+        android:layout_toEndOf="@+id/finishedLabel"
+        android:maxLines="1"
+        android:layout_marginStart="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/zero"
+        android:textColor="#58a691"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/internalPages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/internalPagesLabel"
+        android:layout_alignBottom="@+id/internalPagesLabel"
+        android:layout_toEndOf="@+id/internalPagesLabel"
+        android:maxLines="1"
+        android:layout_marginStart="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/zero"
+        android:textColor="#d49958"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/externalPages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/externalPagesLabel"
+        android:layout_alignBottom="@+id/externalPagesLabel"
+        android:layout_toEndOf="@+id/externalPagesLabel"
+        android:maxLines="1"
+        android:layout_marginStart="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/zero"
+        android:textColor="#a15d39"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/watchListCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/watchListLabel"
+        android:layout_alignBottom="@+id/watchListLabel"
+        android:layout_toEndOf="@+id/watchListLabel"
+        android:maxLines="1"
+        android:layout_marginStart="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/zero"
+        android:textColor="#479f3a"
+        android:textSize="17sp" />
+
+    <Button
+        android:id="@+id/finishedDomains"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="@drawable/button"
+        android:text="@string/viewFinished"
+        android:textColor="#ffff00"
+        android:layout_above="@+id/internalPagesLabel"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/viewInternalPages"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/internalPagesLabel"
+        android:layout_alignBottom="@+id/internalPagesLabel"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/button"
+        android:text="@string/viewInternal"
+        android:textColor="#ffff00" />
+
+    <Button
+        android:id="@+id/viewExternalPages"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/externalPages"
+        android:layout_alignTop="@+id/externalPages"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/button"
+        android:text="@string/viewExternal"
+        android:textColor="#ffff00" />
+
+    <Button
+        android:id="@+id/viewWatchlist"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="@string/viewWatchlist"
+        android:textColor="#ffff00"
+        android:layout_alignTop="@+id/watchListLabel"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/watchListCount" />
+
+    <TextView
+        android:id="@+id/errorLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/watchListLabel"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/errorLabel"
+        android:textColor="#EFB842"
+        android:textSize="17sp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/errorLabel"
+        android:layout_alignBottom="@+id/errorLabel"
+        android:layout_toEndOf="@+id/errorLabel"
+        android:maxLines="1"
+        android:layout_marginStart="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/zero"
+        android:textColor="#9f3c3a"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/pagesLabel"
+        android:layout_width="wrap_content"
+        android:gravity="center_vertical|start"
+        android:text="@string/pages"
+        android:textColor="#EFB842"
+        android:textSize="17sp"
+        android:layout_height="30dp"
+        android:layout_alignBottom="@+id/pages"
+        android:layout_toStartOf="@+id/pages"
+        android:layout_alignTop="@+id/error" />
+
+    <TextView
+        android:id="@+id/pages"
+        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:maxLines="1"
+        android:gravity="center_vertical|start"
+        android:text="@string/zero"
+        android:textColor="#9e58a6"
+        android:textSize="17sp"
+        android:layout_marginStart="4dp"
+        android:layout_above="@+id/results"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/error" />
+
+    <TextView
+        android:id="@+id/results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/errorLabel"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="4dp"
+        android:background="#040404"
+        android:gravity="bottom"
+        android:textColor="#83A2F7"
+        android:textSize="14sp" />
+
+</RelativeLayout>

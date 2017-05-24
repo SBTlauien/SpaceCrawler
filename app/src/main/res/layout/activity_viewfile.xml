@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000" >
+
+    <Button
+        android:id="@+id/clear"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/button"
+        android:text="@string/clear"
+        android:textColor="#ffff00" />
+
+    <Button
+        android:id="@+id/exit"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/button"
+        android:text="@string/exit"
+        android:textColor="#ffff00" />
+
+    <Button
+        android:id="@+id/save"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/button"
+        android:text="save"
+        android:textColor="#ffff00" />
+
+    <TextView
+        android:id="@+id/currentFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/pages"
+        android:layout_toStartOf="@+id/pages"
+        android:layout_alignTop="@+id/pages"
+        android:layout_below="@+id/exit"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical|start"
+        android:textColor="#ef4b42"
+        android:textSize="17sp" />
+
+    <CheckBox
+        android:id="@+id/use"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/currentFile"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/use"
+        android:textColor="#EFB842"
+        android:textSize="17sp" />
+
+    <EditText
+        android:id="@+id/file"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/use"
+        android:layout_alignParentBottom="true"
+        android:background="#040404"
+        android:gravity="top"
+        android:textColor="#83A2F7"
+        android:textSize="14sp" />
+
+</RelativeLayout>

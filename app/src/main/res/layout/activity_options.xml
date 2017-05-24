@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000" >
+
+    <Button
+        android:id="@+id/whiteList"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="@string/whiteList"
+        android:textColor="#ffff00"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        android:id="@+id/exit"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/button"
+        android:text="@string/exit"
+        android:textColor="#ffff00" />
+
+    <Button
+        android:id="@+id/watchList"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="@string/watchList"
+        android:textColor="#ffff00"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/blackList"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="@string/blackList"
+        android:layout_marginTop="5dp"
+        android:textColor="#ffff00"
+        android:layout_below="@+id/exit"
+        android:layout_alignEnd="@+id/whiteList"
+        android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:id="@+id/crawlExternalOption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/blackList"
+        android:layout_alignParentStart="true"
+        android:text="@string/crawlExternal"
+        android:textColor="#EFB842"
+        android:textSize="17sp" />
+
+</RelativeLayout>
