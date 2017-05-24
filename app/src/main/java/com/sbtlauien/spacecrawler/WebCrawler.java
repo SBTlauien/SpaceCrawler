@@ -85,7 +85,6 @@ public class WebCrawler implements Runnable {
     private static void runner(String url) {
         try {
             if (crawlExternal && !externalLinks.isEmpty() && !atomic){
-                System.out.println("0");
                 String prefix;
                 prefix = url.startsWith("https")?"https://":"http://";
                 finished.add(prefix + new URL(url).getHost());
@@ -94,14 +93,12 @@ public class WebCrawler implements Runnable {
                 prefix = externalLinks.get(0).startsWith("https")?"https://":"http://";
                 String host = new URL(externalLinks.get(0)).getHost();
                 MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "DOMAIN: " + host));
-                System.out.println("1");
                 for (int i = externalLinks.size() - 1; i > -1; i--){
                     if (externalLinks.get(i).contains(host)){
                         internalLinks.add(externalLinks.get(i));
                         externalLinks.remove(i);
                     }
                 }
-                System.out.println("2");
                 MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "FINISHED=" + finished.size()));
                 MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
                 MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "EXTERNALPAGES=" + externalLinks.size()));
