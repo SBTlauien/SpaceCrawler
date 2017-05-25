@@ -154,7 +154,7 @@ public class WebCrawler implements Runnable {
                     if (doc.body().toString().contains(s)){
                         try {
                             OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/SourceResults.txt", true));
-                            outputWriter.append(url).append(s + ": " + doc.location() + "\n");
+                            outputWriter.append(s + ": " + url + "\n");
                             outputWriter.flush();
                             outputWriter.close();
                         } catch (Exception ee) {
