@@ -176,7 +176,7 @@ public class WebCrawler implements Runnable {
     }
 
     private static void next(String previousUrl){
-        if (!internalLinks.isEmpty() && internalLinkSpot < internalLinks.size() && !atomic){
+        if (!internalLinks.isEmpty() && internalLinkSpot < internalLinks.size() - 1 && !atomic){
             internalLinkSpot++;
             crawlPage(internalLinks.get(internalLinkSpot));
         } else if (!atomic) {
