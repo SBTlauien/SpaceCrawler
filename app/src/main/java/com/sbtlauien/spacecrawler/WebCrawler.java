@@ -17,24 +17,17 @@ import java.util.ArrayList;
 
 public class WebCrawler implements Runnable {
 
-    private static ArrayList<String> watchList = new ArrayList<>(), whiteList = new ArrayList<>(), blackList = new ArrayList<>(),
+    private static ArrayList<String> sourceWatchList = new ArrayList<>(), linkWatchList = new ArrayList<>(), whiteList = new ArrayList<>(), blackList = new ArrayList<>(),
             internalLinks = new ArrayList<>(), externalLinks = new ArrayList<>(), finished = new ArrayList<>(), fileExtension = new ArrayList<>();
     private static String mainUrl, userAgent;
-    private static int pagesCrawled, watchListCount, internalLinkSpot, errorCount;
-    private static boolean atomic = false, crawlExternal = false, useWatchList = false, useWhiteList = false, useBlackList = false;
+    private static int pagesCrawled, sourceWatchListCount, linkWatchListCount, internalLinkSpot, errorCount;
+    private static boolean atomic = false, crawlExternal = false, useSourceWatchList = false, useLinkWatchList = false, useWhiteList = false, useBlackList = false;
 
     public WebCrawler(String url, String ua) {
         mainUrl = url.endsWith("/")?url.substring(0, url.length() - 1).replace("https://www.", "https://").replace("http://www.", "http://").
                 toLowerCase():url.replace("https://www.", "https://").replace("http://www.", "http://").toLowerCase();
         userAgent = ua;
-        watchList = new ArrayList<>();
-        internalLinks = new ArrayList<>();
-        externalLinks = new ArrayList<>();
-        whiteList = new ArrayList<>();
-        blackList = new ArrayList<>();
-        finished = new ArrayList<>();
-        pagesCrawled = 0;
-        watchListCount = 0;
+        clearAll();
         try {
             File f = new File(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/WhiteList.txt");
             if(!f.exists()) {
@@ -61,7 +54,7 @@ public class WebCrawler implements Runnable {
             }
             if (blackList.isEmpty()) useBlackList = false;
             readerFile.close();
-            f = new File(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/WatchList.txt");
+            f = new File(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/LinkWatchList.txt");
             if(!f.exists()) {
                 OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(f));
                 outputWriter.flush();
@@ -69,9 +62,21 @@ public class WebCrawler implements Runnable {
             }
             readerFile = new BufferedReader(new FileReader(f));
             while ((currentLine = readerFile.readLine()) != null) {
-                watchList.add(currentLine);
+                linkWatchList.add(currentLine);
             }
-            if (watchList.isEmpty()) useWatchList = false;
+            if (linkWatchList.isEmpty()) useLinkWatchList = false;
+            readerFile.close();
+            f = new File(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/SourceWatchList.txt");
+            if(!f.exists()) {
+                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(f));
+                outputWriter.flush();
+                outputWriter.close();
+            }
+            readerFile = new BufferedReader(new FileReader(f));
+            while ((currentLine = readerFile.readLine()) != null) {
+                sourceWatchList.add(currentLine);
+            }
+            if (sourceWatchList.isEmpty()) useSourceWatchList = false;
             readerFile.close();
         } catch (Exception e) {
             MainActivity.toast(e.getMessage(), true);
@@ -113,11 +118,11 @@ public class WebCrawler implements Runnable {
         MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "CRAWLING: " + url));
         pagesCrawled++;
         MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "PAGES=" + pagesCrawled));
-        if (useWatchList && withinListItem(url, watchList)) {
-            watchListCount++;
-            MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "WATCHLIST=" + watchListCount));
+        if (useLinkWatchList && withinListItem(url, linkWatchList)) {
+            linkWatchListCount++;
+            MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "LINKWATCHLIST=" + linkWatchListCount));
             try {
-                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/Results.txt", true));
+                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/LinkResults.txt", true));
                 outputWriter.append(url).append("\n");
                 outputWriter.flush();
                 outputWriter.close();
@@ -132,10 +137,34 @@ public class WebCrawler implements Runnable {
         } catch (IOException e) {
             MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "ERROR: " + url + " - " + e.getMessage()));
             errorCount++;
+            try {
+                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/Errors.txt", true));
+                outputWriter.append(url).append(e + "\n");
+                outputWriter.flush();
+                outputWriter.close();
+            } catch (Exception ee) {
+                MainActivity.toast(ee.getMessage(), true);
+            }
             MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "ERROR=" + errorCount));
             error = true;
         }
         if (!error) {
+            if (useSourceWatchList){
+                for (String s: sourceWatchList) {
+                    if (doc.body().toString().contains(s)){
+                        try {
+                            OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/SourceResults.txt", true));
+                            outputWriter.append(url).append(s + ": " + doc.location() + "\n");
+                            outputWriter.flush();
+                            outputWriter.close();
+                        } catch (Exception ee) {
+                            MainActivity.toast(ee.getMessage(), true);
+                        }
+                        sourceWatchListCount++;
+                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "SOURCEWATCHLIST=" + sourceWatchListCount));
+                    }
+                }
+            }
             Elements links = doc.select("a[href]");
             for (Element link : links) {
                 if (atomic) return;
@@ -144,31 +173,25 @@ public class WebCrawler implements Runnable {
                 if (linkUrl.startsWith(mainUrl) && !internalLinks.contains(linkUrl) && !linkUrl.equals("") && !aFile(linkUrl)){
                     if (useBlackList && useWhiteList && !withinListItem(linkUrl, blackList) && withinListItem(linkUrl, whiteList)) {
                         internalLinks.add(linkUrl);
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
                     } else if (useBlackList && !withinListItem(linkUrl, blackList)) {
                         internalLinks.add(linkUrl);
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
                     } else if (useWhiteList && withinListItem(linkUrl, whiteList)){
                         internalLinks.add(linkUrl);
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
                     } else {
                         internalLinks.add(linkUrl);
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
                     }
+                    MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
                 } else if (!externalLinks.contains(linkUrl) && !withinListDomain(linkUrl, finished) && !linkUrl.equals("") && !aFile(linkUrl)) {
                     if (useBlackList && useWhiteList && !withinListItem(linkUrl, blackList) && withinListItem(linkUrl, whiteList)) {
                         externalLinks.add(linkUrl);
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + externalLinks.size()));
                     } else if (useBlackList && !withinListItem(linkUrl, blackList)) {
                         externalLinks.add(linkUrl);
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + externalLinks.size()));
                     } else if (useWhiteList && withinListItem(linkUrl, whiteList)){
                         externalLinks.add(linkUrl);
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + externalLinks.size()));
                     } else {
                         externalLinks.add(linkUrl);
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + externalLinks.size()));
                     }
+                    MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + externalLinks.size()));
                 }
             }
         }
@@ -220,17 +243,19 @@ public class WebCrawler implements Runnable {
 
     public static void setUse(int listId, boolean b){
         switch (listId){
-            case 0: useWatchList = b; break;
+            case 0: useLinkWatchList = b; break;
             case 1: useWhiteList = b; break;
             case 2: useBlackList = b; break;
+            case 3: useSourceWatchList = b; break;
         }
     }
 
     public static boolean getUse(int listId){
         switch (listId){
-            case 0: return useWatchList;
+            case 0: return useLinkWatchList;
             case 1: return useWhiteList;
             case 2: return useBlackList;
+            case 3: return useSourceWatchList;
         }
         return false;
     }
@@ -240,6 +265,19 @@ public class WebCrawler implements Runnable {
         for (String s: sa) {
             fileExtension.add(s);
         }
+    }
+
+    public static void clearAll(){
+        sourceWatchList = new ArrayList<>();
+        linkWatchList = new ArrayList<>();
+        internalLinks = new ArrayList<>();
+        externalLinks = new ArrayList<>();
+        whiteList = new ArrayList<>();
+        blackList = new ArrayList<>();
+        finished = new ArrayList<>();
+        pagesCrawled = 0;
+        sourceWatchListCount = 0;
+        linkWatchListCount = 0;
     }
 
     public static void setAtomic(boolean b){

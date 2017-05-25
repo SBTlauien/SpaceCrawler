@@ -26,12 +26,12 @@
         android:textColor="#ffff00" />
 
     <Button
-        android:id="@+id/watchList"
+        android:id="@+id/linkWatchList"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/button"
-        android:text="@string/watchList"
+        android:text="@string/linkWatchList"
         android:textColor="#ffff00"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
@@ -48,6 +48,18 @@
         android:layout_below="@+id/exit"
         android:layout_alignEnd="@+id/whiteList"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/sourceWatchList"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="@string/sourceWatchList"
+        android:textColor="#ffff00"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/linkWatchList"
+        android:layout_alignParentEnd="true" />
 
     <CheckBox
         android:id="@+id/crawlExternalOption"

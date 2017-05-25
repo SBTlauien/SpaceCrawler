@@ -16,10 +16,16 @@ public class Options extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
         setContentView(R.layout.activity_options);
-        Button watchListButton = (Button) findViewById(R.id.watchList);
-        watchListButton.setOnClickListener(new View.OnClickListener(){
+        Button linkWatchListButton = (Button) findViewById(R.id.linkWatchList);
+        linkWatchListButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                startActivity(new Intent(getApplicationContext(), ViewFile.class).putExtra("file", Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/WatchList.txt"));
+                startActivity(new Intent(getApplicationContext(), ViewFile.class).putExtra("file", Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/LinkWatchList.txt"));
+            }
+        });
+        Button sourceWatchListButton = (Button) findViewById(R.id.sourceWatchList);
+        sourceWatchListButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                startActivity(new Intent(getApplicationContext(), ViewFile.class).putExtra("file", Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/SourceWatchList.txt"));
             }
         });
         Button whiteListButton = (Button) findViewById(R.id.whiteList);

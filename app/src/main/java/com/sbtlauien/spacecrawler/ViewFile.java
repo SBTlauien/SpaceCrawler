@@ -56,30 +56,36 @@ public class ViewFile extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isChecked()) {
-                    if (getIntent().getExtras().getString("file").contains("WatchList.txt")){
+                    if (getIntent().getExtras().getString("file").contains("LinkWatchList.txt")){
                         WebCrawler.setUse(0, true);
                     } else if (getIntent().getExtras().getString("file").contains("WhiteList.txt")){
                         WebCrawler.setUse(1, true);
                     } else if (getIntent().getExtras().getString("file").contains("BlackList.txt")){
                         WebCrawler.setUse(2, true);
+                    } else if (getIntent().getExtras().getString("file").contains("SourceWatchList.txt")){
+                        WebCrawler.setUse(3, true);
                     }
                 } else {
-                    if (getIntent().getExtras().getString("file").contains("WatchList.txt")){
+                    if (getIntent().getExtras().getString("file").contains("LinkWatchList.txt")){
                         WebCrawler.setUse(0, false);
                     } else if (getIntent().getExtras().getString("file").contains("WhiteList.txt")){
                         WebCrawler.setUse(1, false);
                     } else if (getIntent().getExtras().getString("file").contains("BlackList.txt")){
                         WebCrawler.setUse(2, false);
+                    } else if (getIntent().getExtras().getString("file").contains("SourceWatchList.txt")){
+                        WebCrawler.setUse(3, false);
                     }
                 }
             }
         });
-        if (getIntent().getExtras().getString("file").contains("WatchList.txt")){
+        if (getIntent().getExtras().getString("file").contains("LinkWatchList.txt")){
             useBox.setChecked(WebCrawler.getUse(0));
         } else if (getIntent().getExtras().getString("file").contains("WhiteList.txt")){
             useBox.setChecked(WebCrawler.getUse(1));
         } else if (getIntent().getExtras().getString("file").contains("BlackList.txt")){
             useBox.setChecked(WebCrawler.getUse(2));
+        } else if (getIntent().getExtras().getString("file").contains("SourceWatchList.txt")){
+            useBox.setChecked(WebCrawler.getUse(3));
         }
         try {
             File f = new File(getIntent().getExtras().getString("file"));

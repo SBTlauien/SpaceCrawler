@@ -129,13 +129,25 @@
         android:layout_height="30dp" />
 
     <TextView
-        android:id="@+id/watchListLabel"
+        android:id="@+id/linkWatchListLabel"
         android:layout_width="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/externalPagesLabel"
         android:layout_marginTop="4dp"
         android:gravity="center_vertical|start"
-        android:text="@string/watchListLabel"
+        android:text="@string/linkWatchListLabel"
+        android:textColor="#EFB842"
+        android:textSize="17sp"
+        android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/sourceWatchListLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linkWatchListLabel"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/sourceWatchListLabel"
         android:textColor="#EFB842"
         android:textSize="17sp"
         android:layout_height="30dp" />
@@ -183,17 +195,31 @@
         android:textSize="17sp" />
 
     <TextView
-        android:id="@+id/watchListCount"
+        android:id="@+id/linkWatchListCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/watchListLabel"
-        android:layout_alignBottom="@+id/watchListLabel"
-        android:layout_toEndOf="@+id/watchListLabel"
+        android:layout_alignTop="@+id/linkWatchListLabel"
+        android:layout_alignBottom="@+id/linkWatchListLabel"
+        android:layout_toEndOf="@+id/linkWatchListLabel"
         android:maxLines="1"
         android:layout_marginStart="4dp"
         android:gravity="center_vertical|start"
         android:text="@string/zero"
         android:textColor="#479f3a"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/sourceWatchListCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/sourceWatchListLabel"
+        android:layout_alignBottom="@+id/sourceWatchListLabel"
+        android:layout_toEndOf="@+id/sourceWatchListLabel"
+        android:maxLines="1"
+        android:layout_marginStart="4dp"
+        android:gravity="center_vertical|start"
+        android:text="@string/zero"
+        android:textColor="#3a9f7c"
         android:textSize="17sp" />
 
     <Button
@@ -239,15 +265,39 @@
         android:background="@drawable/button"
         android:text="@string/viewResults"
         android:textColor="#ffff00"
-        android:layout_alignTop="@+id/watchListLabel"
+        android:layout_alignTop="@+id/linkWatchListLabel"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/watchListCount" />
+        android:layout_alignBottom="@+id/linkWatchListCount" />
+
+    <Button
+        android:id="@+id/viewResults2"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="@string/viewResults"
+        android:textColor="#ffff00"
+        android:layout_alignTop="@+id/sourceWatchListLabel"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/sourceWatchListLabel" />
+
+    <Button
+        android:id="@+id/viewErrors"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:text="@string/viewErrors"
+        android:textColor="#ffff00"
+        android:layout_alignTop="@+id/errorLabel"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/errorLabel" />
 
     <TextView
         android:id="@+id/errorLabel"
         android:layout_width="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/watchListLabel"
+        android:layout_below="@+id/sourceWatchListLabel"
         android:layout_marginTop="4dp"
         android:gravity="center_vertical|start"
         android:text="@string/errorLabel"
@@ -273,27 +323,26 @@
         android:id="@+id/pagesLabel"
         android:layout_width="wrap_content"
         android:gravity="center_vertical|start"
+        android:layout_below="@+id/errorLabel"
+        android:layout_centerInParent="true"
         android:text="@string/pages"
         android:textColor="#EFB842"
         android:textSize="17sp"
-        android:layout_height="30dp"
-        android:layout_alignBottom="@+id/pages"
-        android:layout_toStartOf="@+id/pages"
-        android:layout_alignTop="@+id/error" />
+        android:layout_height="30dp" />
 
     <TextView
         android:id="@+id/pages"
         android:layout_height="wrap_content"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
+        android:layout_alignTop="@+id/pagesLabel"
+        android:layout_alignBottom="@+id/pagesLabel"
+        android:layout_toEndOf="@+id/pagesLabel"
         android:maxLines="1"
         android:gravity="center_vertical|start"
         android:text="@string/zero"
         android:textColor="#9e58a6"
         android:textSize="17sp"
-        android:layout_marginStart="4dp"
-        android:layout_above="@+id/results"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/error" />
+        android:layout_marginStart="4dp" />
 
     <TextView
         android:id="@+id/results"
@@ -301,7 +350,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/errorLabel"
+        android:layout_below="@+id/pagesLabel"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="4dp"
         android:background="#040404"
