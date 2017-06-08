@@ -132,7 +132,7 @@ public class WebCrawler {
                 MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "LINKWATCHLIST=" + linkWatchListCount));
                 try {
                     OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/LinkResults.txt", true));
-                    outputWriter.append(prefix + host).append("\n");
+                    outputWriter.append(prefix).append(host).append("\n");
                     outputWriter.flush();
                     outputWriter.close();
                 } catch (Exception e) {
@@ -146,7 +146,7 @@ public class WebCrawler {
             } catch (IOException e) {
                 try {
                     OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/Errors.txt", true));
-                    outputWriter.append(prefix + host).append(e + "\n");
+                    outputWriter.append(prefix).append(host).append(e.toString()).append("\n");
                     outputWriter.flush();
                     outputWriter.close();
                 } catch (Exception ee) {
@@ -163,7 +163,7 @@ public class WebCrawler {
                         if (doc.body().toString().contains(s)){
                             try {
                                 OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/SourceResults.txt", true));
-                                outputWriter.append(s + ": " + prefix + host + "\n");
+                                outputWriter.append(s).append(": ").append(prefix).append(host).append("\n");
                                 outputWriter.flush();
                                 outputWriter.close();
                             } catch (Exception ee) {
