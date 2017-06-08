@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button startButton;
     private TextView error, pages, finished, internalPages, externalPages, sourceWatchListCount, linkWatchListCount, results;
-    private EditText urlData, uaData;
+    private EditText urlData;
     private static Activity activity;
 
     @Override
@@ -50,14 +50,21 @@ public class MainActivity extends AppCompatActivity {
         linkWatchListCount = (TextView) findViewById(R.id.linkWatchListCount);
         results = (TextView) findViewById(R.id.results);
         urlData = (EditText) findViewById(R.id.url);
-        uaData = (EditText) findViewById(R.id.ua);
         startButton = (Button) findViewById(R.id.start);
         startButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 if (startButton.getText().equals("START")) {
                     WebCrawler.setAtomic(false);
                     startButton.setText(R.string.stop);
-                    new Thread(new WebCrawler(urlData.getText().toString(), uaData.getText().toString()), "WebCrawler").start();
+                    error.setText("0");
+                    pages.setText("0");
+                    finished.setText("0");
+                    internalPages.setText("0");
+                    externalPages.setText("0");
+                    sourceWatchListCount.setText("0");
+                    linkWatchListCount.setText("0");
+                    results.setText("");
+                    new WebCrawler(urlData.getText().toString(), "0");
                 } else {
                     WebCrawler.setAtomic(true);
                     startButton.setText(R.string.start);
@@ -239,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
                     outputWriter.flush();
                     outputWriter.close();
                     toast("ERRORS CLEARED", false);
+                    WebCrawler.resetErrorCount();
                 } catch (Exception e) {
                     MainActivity.toast(e.getMessage(), true);
                 }
@@ -309,9 +317,6 @@ public class MainActivity extends AppCompatActivity {
                     results.setText("");
                     pages.setText("0");
                     internalPages.setText("0");
-                    externalPages.setText("0");
-                    sourceWatchListCount.setText("0");
-                    linkWatchListCount.setText("0");
                     urlData.setText(arg1.getStringExtra("lineKey").split("DOMAIN: ")[1]);
                 }
                 results.append(arg1.getStringExtra("lineKey") + "\n");

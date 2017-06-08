@@ -16,7 +16,7 @@
     <string name="crawlExternal">CRAWL EXTERNAL</string>
     <string name="nis">https://niggasin.space</string>
     <string name="spaceCrawler">S.C.(https://niggasin.space/user/95)</string>
-    <string name="pages">PAGES: </string>
+    <string name="totalPages">TOTAL PAGES: </string>
     <string name="finishedLabel">FINISHED: </string>
     <string name="internalLinks">INTERNAL LINKS: </string>
     <string name="externalLinks">EXTERNAL LINKS: </string>

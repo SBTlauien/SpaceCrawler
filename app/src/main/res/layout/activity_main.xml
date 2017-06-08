@@ -48,18 +48,6 @@
         android:textColor="#EFB842"
         android:textSize="17sp" />
 
-    <TextView
-        android:id="@+id/uaLabel"
-        android:layout_width="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/urlLabel"
-        android:layout_height="40dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/ua"
-        android:gravity="center_vertical|start"
-        android:textColor="#EFB842"
-        android:textSize="17sp" />
-
     <EditText
         android:id="@+id/url"
         android:inputType="textUri"
@@ -76,27 +64,11 @@
         android:textColor="#78b2c6"
         android:textSize="17sp" />
 
-    <EditText
-        android:id="@+id/ua"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/uaLabel"
-        android:layout_alignBottom="@+id/uaLabel"
-        android:layout_below="@+id/urlLabel"
-        android:layout_toEndOf="@+id/uaLabel"
-        android:layout_marginStart="4dp"
-        android:background="#090909"
-        android:maxLines="2"
-        android:text="@string/spaceCrawler"
-        android:textColor="#CEE66B"
-        android:textSize="17sp" />
-
     <TextView
         android:id="@+id/finishedLabel"
         android:layout_width="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/uaLabel"
+        android:layout_below="@+id/urlLabel"
         android:layout_marginTop="4dp"
         android:gravity="center_vertical|start"
         android:text="@string/finishedLabel"
@@ -325,7 +297,7 @@
         android:gravity="center_vertical|start"
         android:layout_below="@+id/errorLabel"
         android:layout_centerInParent="true"
-        android:text="@string/pages"
+        android:text="@string/totalPages"
         android:textColor="#EFB842"
         android:textSize="17sp"
         android:layout_height="30dp" />

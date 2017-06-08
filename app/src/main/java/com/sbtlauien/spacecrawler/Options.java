@@ -8,14 +8,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 
 public class Options extends AppCompatActivity {
+
+    private EditText uaData;
+    private static String ua = "S.C.(https://niggasin.space/user/95)";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
         setContentView(R.layout.activity_options);
+        uaData = (EditText) findViewById(R.id.ua);
         Button linkWatchListButton = (Button) findViewById(R.id.linkWatchList);
         linkWatchListButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -43,6 +48,7 @@ public class Options extends AppCompatActivity {
         Button exitButton = (Button) findViewById(R.id.exit);
         exitButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                ua = uaData.getText().toString();
                 finish();
             }
         });
@@ -54,6 +60,10 @@ public class Options extends AppCompatActivity {
             }
         });
         crawlExternalBox.setChecked(WebCrawler.getCrawlExternal());
+    }
+
+    public static String getUa(){
+        return ua;
     }
 
 }

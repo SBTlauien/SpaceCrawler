@@ -1,6 +1,7 @@
 package com.sbtlauien.spacecrawler;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Environment;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,7 +16,7 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class WebCrawler implements Runnable {
+public class WebCrawler {
 
     private static ArrayList<String> sourceWatchList = new ArrayList<>(), linkWatchList = new ArrayList<>(), whiteList = new ArrayList<>(), blackList = new ArrayList<>(),
             internalLinks = new ArrayList<>(), externalLinks = new ArrayList<>(), finished = new ArrayList<>(), fileExtension = new ArrayList<>();
@@ -24,6 +25,19 @@ public class WebCrawler implements Runnable {
     private static boolean atomic = false, crawlExternal = false, useSourceWatchList = false, useLinkWatchList = false, useWhiteList = false, useBlackList = false;
 
     public WebCrawler(String url, String ua) {
+        sourceWatchList = new ArrayList<>();
+        linkWatchList = new ArrayList<>();
+        whiteList = new ArrayList<>();
+        blackList = new ArrayList<>();
+        internalLinks = new ArrayList<>();
+        externalLinks = new ArrayList<>();
+        finished = new ArrayList<>();
+        fileExtension = new ArrayList<>();
+        pagesCrawled = 0;
+        sourceWatchListCount = 0;
+        linkWatchListCount = 0;
+        internalLinkSpot = 0;
+        errorCount = 0;
         mainUrl = url.endsWith("/")?url.substring(0, url.length() - 1).replace("https://www.", "https://").replace("http://www.", "http://").
                 toLowerCase():url.replace("https://www.", "https://").replace("http://www.", "http://").toLowerCase();
         userAgent = ua;
@@ -81,131 +95,132 @@ public class WebCrawler implements Runnable {
         } catch (Exception e) {
             MainActivity.toast(e.getMessage(), true);
         }
+        new CrawlPage().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url, "0");
     }
 
-    public void run() {
-        crawlPage(mainUrl);
-    }
-
-    private static void runner(String url) {
-        try {
-            if (crawlExternal && !externalLinks.isEmpty() && !atomic){
-                String prefix;
-                prefix = url.startsWith("https")?"https://":"http://";
-                finished.add(prefix + new URL(url).getHost());
-                internalLinks = new ArrayList<>();
-                pagesCrawled = 0;
-                prefix = externalLinks.get(0).startsWith("https")?"https://":"http://";
-                String host = new URL(externalLinks.get(0)).getHost();
-                MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "DOMAIN: " + host));
-                for (int i = externalLinks.size() - 1; i > -1; i--){
-                    if (externalLinks.get(i).contains(host)){
-                        internalLinks.add(externalLinks.get(i));
-                        externalLinks.remove(i);
-                    }
-                }
-                MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "FINISHED=" + finished.size()));
-                MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
-                MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "EXTERNALPAGES=" + externalLinks.size()));
-                crawlPage(prefix + host);
-            }
-        }catch (Exception e){
-            MainActivity.toast(e.getMessage(), true);
-        }
-    }
-
-    private static void crawlPage(String url) {
-        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "CRAWLING: " + url));
-        pagesCrawled++;
-        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "PAGES=" + pagesCrawled));
-        if (useLinkWatchList && withinListItem(url, linkWatchList)) {
-            linkWatchListCount++;
-            MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "LINKWATCHLIST=" + linkWatchListCount));
-            try {
-                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/LinkResults.txt", true));
-                outputWriter.append(url).append("\n");
-                outputWriter.flush();
-                outputWriter.close();
-            } catch (Exception e) {
-                MainActivity.toast(e.getMessage(), true);
-            }
-        }
-        Document doc = null;
-        boolean error = false;
-        try {
-            doc = Jsoup.connect(url).userAgent(userAgent).timeout(5000).get();
-        } catch (IOException e) {
-            MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "ERROR: " + url + " - " + e.getMessage()));
-            errorCount++;
-            try {
-                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/Errors.txt", true));
-                outputWriter.append(url).append(e + "\n");
-                outputWriter.flush();
-                outputWriter.close();
-            } catch (Exception ee) {
-                MainActivity.toast(ee.getMessage(), true);
-            }
-            MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "ERROR=" + errorCount));
-            error = true;
-        }
-        if (!error) {
-            if (useSourceWatchList){
-                for (String s: sourceWatchList) {
-                    if (doc.body().toString().contains(s)){
-                        try {
-                            OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/SourceResults.txt", true));
-                            outputWriter.append(s + ": " + url + "\n");
-                            outputWriter.flush();
-                            outputWriter.close();
-                        } catch (Exception ee) {
-                            MainActivity.toast(ee.getMessage(), true);
+    private class CrawlPage extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... a){
+            String prefix = "", host = a[0];
+            if (a[1].equals("1") && crawlExternal && !externalLinks.isEmpty() && !atomic){
+                try {
+                    prefix = host.startsWith("https")?"https://":"http://";
+                    finished.add(prefix + new URL(host).getHost());
+                    internalLinks = new ArrayList<>();
+                    internalLinkSpot = 0;
+                    pagesCrawled = 0;
+                    prefix = externalLinks.get(0).startsWith("https")?"https://":"http://";
+                    host = new URL(externalLinks.get(0)).getHost();
+                    MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "DOMAIN: " + prefix + host));
+                    for (int i = externalLinks.size() - 1; i > -1; i--){
+                        if (externalLinks.get(i).contains(prefix + host)){
+                            internalLinks.add(externalLinks.get(i));
+                            externalLinks.remove(i);
                         }
-                        sourceWatchListCount++;
-                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "SOURCEWATCHLIST=" + sourceWatchListCount));
+                    }
+                    MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "FINISHED=" + finished.size()));
+                }catch (Exception e){
+                    MainActivity.toast(e.getMessage(), true);
+                }
+            }
+            MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "CRAWLING: " + prefix + host));
+            pagesCrawled++;
+            MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "PAGES=" + pagesCrawled));
+            if (useLinkWatchList && withinListItem(prefix + host, linkWatchList)) {
+                linkWatchListCount++;
+                MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "LINKWATCHLIST=" + linkWatchListCount));
+                try {
+                    OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/LinkResults.txt", true));
+                    outputWriter.append(prefix + host).append("\n");
+                    outputWriter.flush();
+                    outputWriter.close();
+                } catch (Exception e) {
+                    MainActivity.toast(e.getMessage(), true);
+                }
+            }
+            Document doc = null;
+            boolean error = false;
+            try {
+                doc = Jsoup.connect(prefix + host).userAgent(userAgent).timeout(5000).get();
+            } catch (IOException e) {
+                try {
+                    OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/Errors.txt", true));
+                    outputWriter.append(prefix + host).append(e + "\n");
+                    outputWriter.flush();
+                    outputWriter.close();
+                } catch (Exception ee) {
+                    MainActivity.toast(ee.getMessage(), true);
+                }
+                errorCount++;
+                MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "ERROR=" + errorCount));
+                MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "ERROR: " + prefix + host + " - " + e.getMessage()));
+                error = true;
+            }
+            if (!error && !atomic) {
+                if (useSourceWatchList){
+                    for (String s: sourceWatchList) {
+                        if (doc.body().toString().contains(s)){
+                            try {
+                                OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/SpaceCrawler/SourceResults.txt", true));
+                                outputWriter.append(s + ": " + prefix + host + "\n");
+                                outputWriter.flush();
+                                outputWriter.close();
+                            } catch (Exception ee) {
+                                MainActivity.toast(ee.getMessage(), true);
+                            }
+                            sourceWatchListCount++;
+                            MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "SOURCEWATCHLIST=" + sourceWatchListCount));
+                        }
+                    }
+                }
+                Elements links = doc.select("a[href]");
+                for (Element link : links) {
+                    if (atomic) return "atomic";
+                    String linkUrl = link.attr("abs:href").endsWith("/") ? link.attr("abs:href").substring(0, link.attr("abs:href").length() - 1).replace("https://www.", "https://").
+                            replace("http://www.", "http://").toLowerCase() : link.attr("abs:href").replace("https://www.", "https://").replace("http://www.", "http://").toLowerCase();
+                    if (linkUrl.startsWith(mainUrl) && !internalLinks.contains(linkUrl) && !linkUrl.equals("") && !aFile(linkUrl)){
+                        if (useBlackList && useWhiteList && !withinListItem(linkUrl, blackList) && withinListItem(linkUrl, whiteList)) {
+                            internalLinks.add(linkUrl);
+                        } else if (useBlackList && !withinListItem(linkUrl, blackList)) {
+                            internalLinks.add(linkUrl);
+                        } else if (useWhiteList && withinListItem(linkUrl, whiteList)){
+                            internalLinks.add(linkUrl);
+                        } else {
+                            internalLinks.add(linkUrl);
+                        }
+                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
+                    } else if (!linkUrl.startsWith(mainUrl) && !externalLinks.contains(linkUrl) && !withinListDomain(linkUrl, finished) && !linkUrl.equals("") && !aFile(linkUrl)) {
+                        if (useBlackList && useWhiteList && !withinListItem(linkUrl, blackList) && withinListItem(linkUrl, whiteList)) {
+                            externalLinks.add(linkUrl);
+                        } else if (useBlackList && !withinListItem(linkUrl, blackList)) {
+                            externalLinks.add(linkUrl);
+                        } else if (useWhiteList && withinListItem(linkUrl, whiteList)){
+                            externalLinks.add(linkUrl);
+                        } else {
+                            externalLinks.add(linkUrl);
+                        }
+                        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "EXTERNALPAGES=" + externalLinks.size()));
                     }
                 }
             }
-            Elements links = doc.select("a[href]");
-            for (Element link : links) {
-                if (atomic) return;
-                String linkUrl = link.attr("abs:href").endsWith("/") ? link.attr("abs:href").substring(0, link.attr("abs:href").length() - 1).replace("https://www.", "https://").
-                        replace("http://www.", "http://").toLowerCase() : link.attr("abs:href").replace("https://www.", "https://").replace("http://www.", "http://").toLowerCase();
-                if (linkUrl.startsWith(mainUrl) && !internalLinks.contains(linkUrl) && !linkUrl.equals("") && !aFile(linkUrl)){
-                    if (useBlackList && useWhiteList && !withinListItem(linkUrl, blackList) && withinListItem(linkUrl, whiteList)) {
-                        internalLinks.add(linkUrl);
-                    } else if (useBlackList && !withinListItem(linkUrl, blackList)) {
-                        internalLinks.add(linkUrl);
-                    } else if (useWhiteList && withinListItem(linkUrl, whiteList)){
-                        internalLinks.add(linkUrl);
-                    } else {
-                        internalLinks.add(linkUrl);
-                    }
-                    MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + internalLinks.size()));
-                } else if (!externalLinks.contains(linkUrl) && !withinListDomain(linkUrl, finished) && !linkUrl.equals("") && !aFile(linkUrl)) {
-                    if (useBlackList && useWhiteList && !withinListItem(linkUrl, blackList) && withinListItem(linkUrl, whiteList)) {
-                        externalLinks.add(linkUrl);
-                    } else if (useBlackList && !withinListItem(linkUrl, blackList)) {
-                        externalLinks.add(linkUrl);
-                    } else if (useWhiteList && withinListItem(linkUrl, whiteList)){
-                        externalLinks.add(linkUrl);
-                    } else {
-                        externalLinks.add(linkUrl);
-                    }
-                    MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "INTERNALPAGES=" + externalLinks.size()));
-                }
+            return prefix + host;
+        }
+        @Override
+        protected void onPostExecute(String result){
+            if (!internalLinks.isEmpty() && internalLinkSpot < internalLinks.size() - 1 && !atomic){
+                internalLinkSpot++;
+                new CrawlPage().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, internalLinks.get(internalLinkSpot), "0");
+            } else if (!atomic) {
+                new CrawlPage().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, result, "1");
+            } else {
+                MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "ALLFINISHED=TRUE"));
+                atomic = false;
             }
         }
-        next(url);
     }
 
-    private static void next(String previousUrl){
-        if (!internalLinks.isEmpty() && internalLinkSpot < internalLinks.size() - 1 && !atomic){
-            internalLinkSpot++;
-            crawlPage(internalLinks.get(internalLinkSpot));
-        } else if (!atomic) {
-            runner(previousUrl);
-        }
-        MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "ALLFINISHED=TRUE"));
+    public static void resetErrorCount(){
+        errorCount = 0;
     }
 
     private static boolean withinListDomain(String s, ArrayList<String> al){

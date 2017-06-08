@@ -61,11 +61,39 @@
         android:layout_below="@+id/linkWatchList"
         android:layout_alignParentEnd="true" />
 
+    <TextView
+        android:id="@+id/uaLabel"
+        android:layout_width="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/blackList"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/ua"
+        android:gravity="center_vertical|start"
+        android:textColor="#EFB842"
+        android:textSize="17sp" />
+
+    <EditText
+        android:id="@+id/ua"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/uaLabel"
+        android:layout_alignBottom="@+id/uaLabel"
+        android:layout_below="@+id/urlLabel"
+        android:layout_toEndOf="@+id/uaLabel"
+        android:layout_marginStart="4dp"
+        android:background="#090909"
+        android:maxLines="2"
+        android:text="@string/spaceCrawler"
+        android:textColor="#CEE66B"
+        android:textSize="17sp" />
+
     <CheckBox
         android:id="@+id/crawlExternalOption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/blackList"
+        android:layout_below="@+id/uaLabel"
         android:layout_alignParentStart="true"
         android:text="@string/crawlExternal"
         android:textColor="#EFB842"
