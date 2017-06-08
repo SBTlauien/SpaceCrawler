@@ -111,6 +111,7 @@ public class WebCrawler {
                     pagesCrawled = 0;
                     prefix = externalLinks.get(0).startsWith("https")?"https://":"http://";
                     host = new URL(externalLinks.get(0)).getHost();
+                    mainUrl = prefix + host ;
                     MainActivity.getActivity().sendBroadcast(new Intent().setAction("LINE_ACTION").putExtra("lineKey", "DOMAIN: " + prefix + host));
                     for (int i = externalLinks.size() - 1; i > -1; i--){
                         if (externalLinks.get(i).contains(prefix + host)){
